@@ -10,6 +10,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 
 class PersonType extends AbstractType
 {
@@ -19,7 +20,8 @@ class PersonType extends AbstractType
             ->add('name')
             ->add('firstName')
             ->add('mail')
-            ->add('password')
+            ->add('username')
+            ->add('password', PasswordType::class )
             ->add('phoneNum')
             ->add('team', EntityType::class, [
                 'class' => Team::class,

@@ -4,12 +4,17 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PersonRepository")
- * @ApiResource
+  * @UniqueEntity(
+ *     fields={"username", "mail"},
+ *     message="les username et mail doivent être unique"
+ * )
  */
-class Person
+class Person implements UserInterface
 {
     /**
      * @ORM\Id()
@@ -37,6 +42,11 @@ class Person
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $username;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -106,6 +116,18 @@ class Person
         return $this;
     }
 
+    public function getUsername(): ?string
+    {
+        return $this->username;
+    }
+
+    public function setUsername(string $username): self
+    {
+        $this->username = $username;
+
+        return $this;
+    }
+
     public function getPassword(): ?string
     {
         return $this->password;
@@ -142,4 +164,29 @@ class Person
 
         return $this;
     }
+
+    /**
+     * @ORM\Column(type="array")
+     */
+    private $roles = [];
+
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    public function eraseCredentials() {}
+
+    public function getSalt() {}
 }

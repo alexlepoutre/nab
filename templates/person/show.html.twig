@@ -2,23 +2,6 @@
 
 {% block title %}Person{% endblock %}
 
-{% block javascripts %}
-<script type="javascript">
-// The subscriber subscribes to updates for the https://example.com/foo topic
-// and to any topic matching https://example.com/books/{name}
-
-
-const url = new URL('http://localhost/hub');
-url.searchParams.append('topic', 'http://120.0.0.1:8000/person/{id}');
-
-
-const eventSource = new EventSource(url);
-
-// The callback will be called every time an update is published
-eventSource.onmessage = e => console.log(e); // do something with the payload
-</script>
-{% endblock %}
-
 {% block body %}
 
     <h1>Person</h1>

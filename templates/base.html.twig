@@ -5,7 +5,10 @@
         <title>{% block title %}Welcome!{% endblock %}</title>
         {% block stylesheets %}
         <link rel="stylesheet" type="text/css" href="https://bootswatch.com/4/cosmo/bootstrap.min.css">
+
+
         {% endblock %}
+     
     </head>
 
     <body>
@@ -17,7 +20,40 @@
                 
                 <a class="nav-link" style="color:red" href="{{ path('security_logout') }}"> >> Déconnexion de {{ app.user.firstname }} < <</a>
             {% endif %}
+
+            <div id="messagePush"></div>
         {% block body %}{% endblock %}
         {% block javascripts %}{% endblock %}
     </body>
+   
+    <script>
+    
+            var client = new WebSocket( 'ws://localhost:8080/' )
+            var message = {
+                action: 'push',
+                channel: 'ITROOM',
+                qui: {% if not app.user %}'Anonymous'{% else %}'{{ app.user.firstname }}'{% endif %},
+                message: ' vient de se connecter'
+            }
+                client.onopen = () => { 
+                    client.send( JSON.stringify( { action: 'subscribe', channel: 'ITROOM' } ) )
+                    client.send( JSON.stringify( message ) )
+                }
+            
+            client.onmessage = ev => {
+                console.info( 'Message reçu par client' )
+        
+                if ( typeof ev.data === 'string' ) {
+                    var message = JSON.parse( ev.data )
+                    console.log( message )
+
+                    switch ( message.action ) {
+                        case 'write': 
+                            document.querySelector('#messagePush').innerHTML += '<br>' + message.qui + ' : ' + message.message
+                            break 
+                    }
+                }
+             }
+        //document.querySelector('#messagePush').innerHTML = "coucou";
+    </script>
 </html>

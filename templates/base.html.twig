@@ -20,7 +20,12 @@
                 
                 <a class="nav-link" style="color:red" href="{{ path('security_logout') }}"> >> Déconnexion de {{ app.user.firstname }} < <</a>
             {% endif %}
+<FORM>
+ <input type="text" name="sethu" id="hu" value="Dit un truc ici" />
+ <input type="button" value="Envoi à tout le monde" onclick="pushMessage(document.getElementById('hu').value)" />
+</FORM>
 
+<a href="javascript:">ici</a>
             <div id="messagePush"></div>
         {% block body %}{% endblock %}
         {% block javascripts %}{% endblock %}
@@ -54,6 +59,21 @@
                     }
                 }
              }
+             function pushMessage(msg)
+             {
+                var client = new WebSocket( 'ws://nab.itroom.fr:8080/' )
+                var message = {
+                action: 'push',
+                channel: 'ITROOM',
+                qui: {% if not app.user %}'Anonymous'{% else %}'{{ app.user.firstname }}'{% endif %},
+                message: msg
+            }
+                 client.onopen = () => { 
+                    client.send( JSON.stringify( { action: 'subscribe', channel: 'ITROOM' } ) )
+                    client.send( JSON.stringify( message ))
+                }
+             }
+             
         //document.querySelector('#messagePush').innerHTML = "coucou";
     </script>
 </html>

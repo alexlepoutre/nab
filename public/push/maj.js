@@ -5,7 +5,7 @@ var message = {
     message: ' a mise à jour d\'une entrée'
 }
 
-var serv = new WebSocket( 'ws://localhost:8080/' );
+var serv = new WebSocket( 'ws://nab.itroom.fr:8080/' );
 
 //client.onopen = () => client.send( JSON.stringify( { action: 'subscribe', channel: 'ITROOM' } ) );          
 
